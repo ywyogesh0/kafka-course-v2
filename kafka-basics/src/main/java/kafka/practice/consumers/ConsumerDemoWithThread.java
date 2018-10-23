@@ -80,12 +80,14 @@ public class ConsumerDemoWithThread {
                 while (true) {
                     ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(100));
                     for (ConsumerRecord consumerRecord : consumerRecords) {
-                        System.out.println("Key = " + consumerRecord.key() + "\n");
-                        System.out.println("Value = " + consumerRecord.value() + "\n");
-                        System.out.println("Topic = " + consumerRecord.topic() + "\n");
-                        System.out.println("Partition = " + consumerRecord.partition() + "\n");
-                        System.out.println("Offset = " + consumerRecord.offset() + "\n");
-                        System.out.println("Timestamp = " + consumerRecord.timestamp() + "\n");
+                        System.out.println("Key = " + consumerRecord.key());
+                        System.out.println("Value = " + consumerRecord.value());
+                        System.out.println("Topic = " + consumerRecord.topic());
+                        System.out.println("Partition = " + consumerRecord.partition());
+                        System.out.println("Offset = " + consumerRecord.offset());
+                        System.out.println("Timestamp = " + consumerRecord.timestamp());
+
+                        System.out.println();
                     }
                 }
             } catch (WakeupException we) {

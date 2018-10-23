@@ -39,6 +39,8 @@ public class ProducerDemoWithCallback {
                         "Partition : " + recordMetadata.partition() + "\n" +
                         "Offset : " + recordMetadata.offset() + "\n" +
                         "Timestamp : " + recordMetadata.timestamp());
+
+                System.out.println();
             } else {
                 LOG.error("Error While Producing", e);
             }
