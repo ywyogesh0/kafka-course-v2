@@ -1,6 +1,8 @@
 package kafka.practice.producers;
 
 import org.apache.kafka.clients.producer.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
@@ -9,6 +11,7 @@ import static kafka.practice.constants.Constant.*;
 
 public class ProducerDemoWithKeys {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ProducerDemoWithKeys.class.getName());
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
 
@@ -40,6 +43,8 @@ public class ProducerDemoWithKeys {
                             "Partition : " + recordMetadata.partition() + "\n" +
                             "Offset : " + recordMetadata.offset() + "\n" +
                             "Timestamp : " + recordMetadata.timestamp());
+                } else {
+                    LOG.error("Error While Producing", e);
                 }
             }).get(); // block .send() - synchronus
         }
