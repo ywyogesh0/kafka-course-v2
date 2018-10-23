@@ -3,13 +3,14 @@ package kafka.practice.producers;
 import org.apache.kafka.clients.producer.*;
 
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 
 import static kafka.practice.constants.Constant.*;
 
 public class ProducerDemoWithKeys {
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
 
         // create properties
         Properties properties = new Properties();
@@ -40,10 +41,10 @@ public class ProducerDemoWithKeys {
                             "Offset : " + recordMetadata.offset() + "\n" +
                             "Timestamp : " + recordMetadata.timestamp());
                 }
-            });
+            }).get(); // block .send() - synchronus
         }
 
         // flush and close
-        producer.close();
+        //producer.close();
     }
 }
