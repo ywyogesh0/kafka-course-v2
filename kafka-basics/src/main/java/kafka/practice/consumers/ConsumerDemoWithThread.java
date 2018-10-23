@@ -25,12 +25,14 @@ public class ConsumerDemoWithThread {
 
     private void startConsumerThread() {
 
+        String groupIdValue = "g2";
+
         // create properties
         Properties properties = new Properties();
         properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS_VALUE);
         properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, KEY_DESERIALIZER_CLASS_VALUE);
         properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, VALUE_DESERIALIZER_CLASS_VALUE);
-        properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, GROUP_ID_VALUE);
+        properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupIdValue);
         properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, AUTO_OFFSET_RESET_VALUE);
 
         // start consumer thread

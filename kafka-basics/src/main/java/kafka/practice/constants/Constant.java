@@ -12,6 +12,5 @@ public class Constant {
     public static final String VALUE_SERIALIZER_CLASS_VALUE = StringSerializer.class.getName();
     public static final String KEY_DESERIALIZER_CLASS_VALUE = StringDeserializer.class.getName();
     public static final String VALUE_DESERIALIZER_CLASS_VALUE = StringDeserializer.class.getName();
-    public static final String GROUP_ID_VALUE = "g1";
     public static final String AUTO_OFFSET_RESET_VALUE = "earliest";
 }
