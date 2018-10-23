@@ -17,9 +17,6 @@ public class ConsumerDemoWithAssignSeek {
 
     private static final Logger LOG = LoggerFactory.getLogger(ConsumerDemoWithAssignSeek.class.getName());
 
-    private ConsumerThread consumerThread;
-    private CountDownLatch countDownLatch = new CountDownLatch(1);
-
     public static void main(String[] args) {
         new ConsumerDemoWithAssignSeek().startConsumerThread();
     }
@@ -32,90 +29,44 @@ public class ConsumerDemoWithAssignSeek {
         properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, KEY_DESERIALIZER_CLASS_VALUE);
         properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, VALUE_DESERIALIZER_CLASS_VALUE);
 
-        // start consumer thread
-        consumerThread = new ConsumerThread(properties);
-        new Thread(consumerThread).start();
+        // create kafka consumer
+        Consumer<String, String> consumer = new KafkaConsumer<>(properties);
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            LOG.info("Shutdown hook has called...");
-            consumerThread.shutdown();
-            try {
-                countDownLatch.await();
-            } catch (InterruptedException e) {
-                LOG.error("Shutdown hook has interrupted...", e);
-            }
-            LOG.info("Application has exited...");
-        }));
+        // assign topic partition(s) to consumer
+        TopicPartition topicPartition = new TopicPartition(TOPIC_VALUE, 0);
+        consumer.assign(Collections.singleton(topicPartition));
 
-        try {
-            countDownLatch.await();
-        } catch (InterruptedException e) {
-            LOG.error("Application has interrupted...", e);
-        } finally {
-            LOG.info("Application is exiting...");
-        }
-    }
+        // seek
+        long startingOffset = 2L;
+        consumer.seek(topicPartition, startingOffset);
 
-    class ConsumerThread implements Runnable {
+        int totalNumberOfRecordsToRead = 5;
+        int count = 1;
+        boolean isValid = true;
 
-        private Consumer<String, String> consumer;
+        // poll records
+        while (isValid) {
+            ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(100));
+            for (ConsumerRecord consumerRecord : consumerRecords) {
+                System.out.println("Key = " + consumerRecord.key());
+                System.out.println("Value = " + consumerRecord.value());
+                System.out.println("Topic = " + consumerRecord.topic());
+                System.out.println("Partition = " + consumerRecord.partition());
+                System.out.println("Offset = " + consumerRecord.offset());
+                System.out.println("Timestamp = " + consumerRecord.timestamp());
 
-        ConsumerThread(Properties properties) {
-            // create kafka consumer
-            consumer = new KafkaConsumer<>(properties);
+                System.out.println();
 
-            // assign topic partition(s) to consumer
-            TopicPartition topicPartition = new TopicPartition(TOPIC_VALUE, 0);
-            consumer.assign(Collections.singleton(topicPartition));
+                count += 1;
 
-            // seek
-            long startingOffset = 2L;
-            consumer.seek(topicPartition, startingOffset);
-        }
-
-        @Override
-        public void run() {
-
-            int totalNumberOfRecordsToRead = 5;
-            int count = 1;
-            boolean isValid = true;
-
-            // poll records
-            try {
-                while (isValid) {
-                    ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(100));
-                    for (ConsumerRecord consumerRecord : consumerRecords) {
-                        System.out.println("Key = " + consumerRecord.key());
-                        System.out.println("Value = " + consumerRecord.value());
-                        System.out.println("Topic = " + consumerRecord.topic());
-                        System.out.println("Partition = " + consumerRecord.partition());
-                        System.out.println("Offset = " + consumerRecord.offset());
-                        System.out.println("Timestamp = " + consumerRecord.timestamp());
-
-                        System.out.println();
-
-                        count += 1;
-
-                        if (count > totalNumberOfRecordsToRead) {
-                            isValid = false;
-                            break;
-                        }
-                    }
+                if (count > totalNumberOfRecordsToRead) {
+                    isValid = false;
+                    break;
                 }
-
-                LOG.info(totalNumberOfRecordsToRead + " records have been read...");
-
-            } catch (WakeupException we) {
-                LOG.error("Consumer has been interrupted...");
-            } finally {
-                consumer.close();
-                countDownLatch.countDown();
             }
-
         }
 
-        void shutdown() {
-            consumer.wakeup();
-        }
+        LOG.info(totalNumberOfRecordsToRead + " records have been read...");
+        LOG.info("Exiting Application...");
     }
 }
