@@ -65,19 +65,23 @@ public class ConsumerDemoWithAssignSeek {
             consumer = new KafkaConsumer<>(properties);
 
             // assign topic partition(s) to consumer
-            TopicPartition topicPartition = new TopicPartition(TOPIC_VALUE, 1);
+            TopicPartition topicPartition = new TopicPartition(TOPIC_VALUE, 0);
             consumer.assign(Collections.singleton(topicPartition));
 
             // seek
-            consumer.seek(topicPartition, 5L);
+            long startingOffset = 2L;
+            consumer.seek(topicPartition, startingOffset);
         }
 
         @Override
         public void run() {
 
+            int totalNumberOfRecordsToRead = 5;
+            int count = 1;
+
             // poll records
             try {
-                while (true) {
+                while (count <= totalNumberOfRecordsToRead) {
                     ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(100));
                     for (ConsumerRecord consumerRecord : consumerRecords) {
                         System.out.println("Key = " + consumerRecord.key());
@@ -88,8 +92,13 @@ public class ConsumerDemoWithAssignSeek {
                         System.out.println("Timestamp = " + consumerRecord.timestamp());
 
                         System.out.println();
+
+                        count += 1;
                     }
                 }
+
+                LOG.info(totalNumberOfRecordsToRead + " records have been read...");
+
             } catch (WakeupException we) {
                 LOG.error("Consumer has been interrupted...");
             } finally {
@@ -99,7 +108,7 @@ public class ConsumerDemoWithAssignSeek {
 
         }
 
-        public void shutdown() {
+        void shutdown() {
             consumer.wakeup();
         }
     }
