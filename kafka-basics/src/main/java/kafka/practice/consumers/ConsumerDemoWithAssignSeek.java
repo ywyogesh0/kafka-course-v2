@@ -48,26 +48,25 @@ public class ConsumerDemoWithAssignSeek {
         while (isValid) {
             ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(100));
             for (ConsumerRecord consumerRecord : consumerRecords) {
-                System.out.println("Key = " + consumerRecord.key());
-                System.out.println("Value = " + consumerRecord.value());
-                System.out.println("Topic = " + consumerRecord.topic());
-                System.out.println("Partition = " + consumerRecord.partition());
-                System.out.println("Offset = " + consumerRecord.offset());
-                System.out.println("Timestamp = " + consumerRecord.timestamp());
+                LOG.info("Key = " + consumerRecord.key() + "\n");
+                LOG.info("Value = " + consumerRecord.value() + "\n");
+                LOG.info("Topic = " + consumerRecord.topic() + "\n");
+                LOG.info("Partition = " + consumerRecord.partition() + "\n");
+                LOG.info("Offset = " + consumerRecord.offset() + "\n");
+                LOG.info("Timestamp = " + consumerRecord.timestamp() + "\n");
 
-                System.out.println();
+                LOG.info("\n");
 
                 count += 1;
 
                 if (count > totalNumberOfRecordsToRead) {
-
-                    LOG.info(totalNumberOfRecordsToRead + " records have been read...");
-                    LOG.info("Exiting Application...");
-
                     isValid = false;
                     break;
                 }
             }
         }
+
+        LOG.info(totalNumberOfRecordsToRead + " records have been read..." + "\n");
+        LOG.info("Exiting Application...");
     }
 }

@@ -38,13 +38,13 @@ public class ProducerDemoWithKeys {
             // send records - asynchronus call
             producer.send(producerRecord, (recordMetadata, e) -> {
                 if (e == null) {
-                    System.out.println("RecordMetadata : \n" +
+                    LOG.info("RecordMetadata : \n" +
                             "Topic : " + recordMetadata.topic() + "\n" +
                             "Partition : " + recordMetadata.partition() + "\n" +
                             "Offset : " + recordMetadata.offset() + "\n" +
                             "Timestamp : " + recordMetadata.timestamp());
 
-                    System.out.println();
+                    LOG.info("\n");
                 } else {
                     LOG.error("Error While Producing", e);
                 }

@@ -1,6 +1,8 @@
 package kafka.practice.consumers;
 
 import org.apache.kafka.clients.consumer.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static kafka.practice.constants.Constant.*;
 
@@ -9,6 +11,8 @@ import java.util.Collections;
 import java.util.Properties;
 
 public class ConsumerDemo {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ConsumerDemo.class.getName());
 
     public static void main(String[] args) {
 
@@ -32,14 +36,14 @@ public class ConsumerDemo {
         while (true) {
             ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(100));
             for (ConsumerRecord consumerRecord : consumerRecords) {
-                System.out.println("Key = " + consumerRecord.key());
-                System.out.println("Value = " + consumerRecord.value());
-                System.out.println("Topic = " + consumerRecord.topic());
-                System.out.println("Partition = " + consumerRecord.partition());
-                System.out.println("Offset = " + consumerRecord.offset());
-                System.out.println("Timestamp = " + consumerRecord.timestamp());
+                LOG.info("Key = " + consumerRecord.key() + "\n");
+                LOG.info("Value = " + consumerRecord.value() + "\n");
+                LOG.info("Topic = " + consumerRecord.topic() + "\n");
+                LOG.info("Partition = " + consumerRecord.partition() + "\n");
+                LOG.info("Offset = " + consumerRecord.offset() + "\n");
+                LOG.info("Timestamp = " + consumerRecord.timestamp() + "\n");
 
-                System.out.println();
+                LOG.info("\n");
             }
         }
     }
