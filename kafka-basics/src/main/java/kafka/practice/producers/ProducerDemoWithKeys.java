@@ -26,6 +26,8 @@ public class ProducerDemoWithKeys {
             String key = "key_" + i;
             String value = "value_" + i;
 
+            System.out.println("Key = " + key + " , Value = " + value + "\n");
+
             ProducerRecord<String, String> producerRecord =
                     new ProducerRecord<>(TOPIC_VALUE, key, value);
 
