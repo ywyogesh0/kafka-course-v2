@@ -45,6 +45,6 @@ public class ProducerDemoWithKeys {
         }
 
         // flush and close
-        //producer.close();
+        producer.close();
     }
 }
