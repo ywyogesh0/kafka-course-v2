@@ -48,14 +48,12 @@ public class ConsumerDemoWithAssignSeek {
         while (isValid) {
             ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(100));
             for (ConsumerRecord consumerRecord : consumerRecords) {
-                LOG.info("Key = " + consumerRecord.key() + "\n");
-                LOG.info("Value = " + consumerRecord.value() + "\n");
-                LOG.info("Topic = " + consumerRecord.topic() + "\n");
-                LOG.info("Partition = " + consumerRecord.partition() + "\n");
-                LOG.info("Offset = " + consumerRecord.offset() + "\n");
-                LOG.info("Timestamp = " + consumerRecord.timestamp() + "\n");
-
-                LOG.info("\n");
+                LOG.info("Key = " + consumerRecord.key());
+                LOG.info("Value = " + consumerRecord.value());
+                LOG.info("Topic = " + consumerRecord.topic());
+                LOG.info("Partition = " + consumerRecord.partition());
+                LOG.info("Offset = " + consumerRecord.offset());
+                LOG.info("Timestamp = " + consumerRecord.timestamp());
 
                 count += 1;
 
@@ -66,7 +64,7 @@ public class ConsumerDemoWithAssignSeek {
             }
         }
 
-        LOG.info(totalNumberOfRecordsToRead + " records have been read..." + "\n");
+        LOG.info(totalNumberOfRecordsToRead + " records have been read...");
         LOG.info("Exiting Application...");
     }
 }
