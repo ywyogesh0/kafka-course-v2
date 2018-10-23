@@ -16,6 +16,7 @@ import static kafka.practice.constants.Constant.*;
 public class ConsumerDemoWithAssignSeek {
 
     private static final Logger LOG = LoggerFactory.getLogger(ConsumerDemoWithAssignSeek.class.getName());
+    private CountDownLatch latch = new CountDownLatch(1);
 
     public static void main(String[] args) {
         new ConsumerDemoWithAssignSeek().startConsumerThread();
@@ -61,12 +62,19 @@ public class ConsumerDemoWithAssignSeek {
 
                 if (count > totalNumberOfRecordsToRead) {
                     isValid = false;
+                    latch.countDown();
                     break;
                 }
             }
         }
 
-        LOG.info(totalNumberOfRecordsToRead + " records have been read...");
-        LOG.info("Exiting Application...");
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            LOG.info(totalNumberOfRecordsToRead + " records have been read...");
+            LOG.info("Exiting Application...");
+        }
     }
 }
