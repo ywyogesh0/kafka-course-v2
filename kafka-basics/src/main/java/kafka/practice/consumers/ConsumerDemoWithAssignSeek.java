@@ -78,10 +78,11 @@ public class ConsumerDemoWithAssignSeek {
 
             int totalNumberOfRecordsToRead = 5;
             int count = 1;
+            boolean isValid = true;
 
             // poll records
             try {
-                while (count <= totalNumberOfRecordsToRead) {
+                while (isValid) {
                     ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(100));
                     for (ConsumerRecord consumerRecord : consumerRecords) {
                         System.out.println("Key = " + consumerRecord.key());
@@ -94,6 +95,11 @@ public class ConsumerDemoWithAssignSeek {
                         System.out.println();
 
                         count += 1;
+
+                        if (count > totalNumberOfRecordsToRead) {
+                            isValid = false;
+                            break;
+                        }
                     }
                 }
 
