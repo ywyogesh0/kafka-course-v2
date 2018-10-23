@@ -1,6 +1,7 @@
 package kafka.practice.consumers;
 
 import org.apache.kafka.clients.consumer.*;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,28 +13,24 @@ import java.util.concurrent.CountDownLatch;
 
 import static kafka.practice.constants.Constant.*;
 
-public class ConsumerDemoWithThread {
+public class ConsumerDemoWithAssignSeek {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ConsumerDemoWithThread.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ConsumerDemoWithAssignSeek.class.getName());
 
     private ConsumerThread consumerThread;
     private CountDownLatch countDownLatch = new CountDownLatch(1);
 
     public static void main(String[] args) {
-        new ConsumerDemoWithThread().startConsumerThread();
+        new ConsumerDemoWithAssignSeek().startConsumerThread();
     }
 
     private void startConsumerThread() {
-
-        String groupIdValue = "g2";
 
         // create properties
         Properties properties = new Properties();
         properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS_VALUE);
         properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, KEY_DESERIALIZER_CLASS_VALUE);
         properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, VALUE_DESERIALIZER_CLASS_VALUE);
-        properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupIdValue);
-        properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, AUTO_OFFSET_RESET_VALUE);
 
         // start consumer thread
         consumerThread = new ConsumerThread(properties);
@@ -67,8 +64,12 @@ public class ConsumerDemoWithThread {
             // create kafka consumer
             consumer = new KafkaConsumer<>(properties);
 
-            // subscribe consumer to topic(s)
-            consumer.subscribe(Collections.singleton(TOPIC_VALUE));
+            // assign topic partition(s) to consumer
+            TopicPartition topicPartition = new TopicPartition(TOPIC_VALUE, 1);
+            consumer.assign(Collections.singleton(topicPartition));
+
+            // seek
+            consumer.seek(topicPartition, 5L);
         }
 
         @Override
