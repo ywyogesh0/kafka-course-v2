@@ -17,6 +17,8 @@ public class ConsumerDemo {
         properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS_VALUE);
         properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, KEY_DESERIALIZER_CLASS_VALUE);
         properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, VALUE_DESERIALIZER_CLASS_VALUE);
+        properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, GROUP_ID_VALUE);
+        properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, AUTO_OFFSET_RESET_VALUE);
 
         // create kafka consumer
         Consumer<String, String> consumer = new KafkaConsumer<>(properties);
@@ -25,17 +27,16 @@ public class ConsumerDemo {
         consumer.subscribe(Collections.singleton(TOPIC_VALUE));
 
         // poll records
-        ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(100));
-        for (ConsumerRecord consumerRecord : consumerRecords) {
-            System.out.println("Key = " + consumerRecord.key() + "\n");
-            System.out.println("Value = " + consumerRecord.value() + "\n");
-            System.out.println("Topic = " + consumerRecord.topic() + "\n");
-            System.out.println("Partition = " + consumerRecord.partition() + "\n");
-            System.out.println("Offset = " + consumerRecord.offset() + "\n");
-            System.out.println("Timestamp = " + consumerRecord.timestamp() + "\n");
+        while (true) {
+            ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(100));
+            for (ConsumerRecord consumerRecord : consumerRecords) {
+                System.out.println("Key = " + consumerRecord.key() + "\n");
+                System.out.println("Value = " + consumerRecord.value() + "\n");
+                System.out.println("Topic = " + consumerRecord.topic() + "\n");
+                System.out.println("Partition = " + consumerRecord.partition() + "\n");
+                System.out.println("Offset = " + consumerRecord.offset() + "\n");
+                System.out.println("Timestamp = " + consumerRecord.timestamp() + "\n");
+            }
         }
-
-        // close consumer
-        consumer.close();
     }
 }
