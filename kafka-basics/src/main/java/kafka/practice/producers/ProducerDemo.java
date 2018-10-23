@@ -30,5 +30,7 @@ public class ProducerDemo {
         // send records - asynchronus call
         producer.send(producerRecord);
 
+        // flush and close
+        producer.close();
     }
 }
