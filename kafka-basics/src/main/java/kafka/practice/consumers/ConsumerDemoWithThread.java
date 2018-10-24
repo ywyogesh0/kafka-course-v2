@@ -16,7 +16,7 @@ public class ConsumerDemoWithThread {
 
     private static final Logger LOG = LoggerFactory.getLogger(ConsumerDemoWithThread.class.getName());
 
-    private ConsumerThread consumerThread;
+    private Runnable consumerThread;
     private CountDownLatch countDownLatch = new CountDownLatch(1);
 
     public static void main(String[] args) {
@@ -41,12 +41,14 @@ public class ConsumerDemoWithThread {
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             LOG.info("Shutdown hook has called...");
-            consumerThread.shutdown();
+            ((ConsumerThread) consumerThread).shutdown();
+
             try {
                 countDownLatch.await();
             } catch (InterruptedException e) {
                 LOG.error("Shutdown hook has interrupted...", e);
             }
+
             LOG.info("Application has exited...");
         }));
 
