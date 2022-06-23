@@ -15,16 +15,22 @@ public class ConsumerDemo {
     private static final Logger LOG = LoggerFactory.getLogger(ConsumerDemo.class.getName());
 
     public static void main(String[] args) {
-
-        String groupIdValue = "g1";
-
-        // create properties
         Properties properties = new Properties();
         properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS_VALUE);
+        properties.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, CONSUMER_CLIENT_ID);
         properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, KEY_DESERIALIZER_CLASS_VALUE);
         properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, VALUE_DESERIALIZER_CLASS_VALUE);
-        properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupIdValue);
+        properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, GROUP_ID_VALUE);
         properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, AUTO_OFFSET_RESET_VALUE);
+        properties.setProperty(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, "1");
+        properties.setProperty(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, "500");
+        properties.setProperty(ConsumerConfig.FETCH_MAX_BYTES_CONFIG, "52428800");
+        properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "500");
+        properties.setProperty(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, "300000");
+        properties.setProperty(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "5000");
+        properties.setProperty(SECURITY_PROTOCOL_KEY, SECURITY_PROTOCOL_VALUE);
+        properties.setProperty(SASL_MECHANISM_KEY, SASL_MECHANISM_VALUE);
+        properties.setProperty(SASL_JAAS_CONFIG_KEY, SASL_JAAS_CONFIG_VALUE);
 
         // create kafka consumer
         Consumer<String, String> consumer = new KafkaConsumer<>(properties);
